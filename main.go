@@ -2,7 +2,7 @@ package main
 
 func main() {
 	store := NewMemoryStore()
-	go startCRUDServer(store)
+	go startAPIServer(store)
 	go startTFTPServer("/tftpboot")
 	go startDHCPServer(store)
 

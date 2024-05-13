@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func startCRUDServer(store *MemoryStore) {
+func startAPIServer(store *MemoryStore) {
 	http.HandleFunc("/node", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
