@@ -16,6 +16,22 @@ type Node struct {
 	OptionsV6 dhcpv6.Options   `json:"-" db:"dhcpv6_options"`
 }
 
+func (n *Node) SetOptionsV4(options dhcpv4.Options) {
+	n.OptionsV4 = options
+}
+
+func (n *Node) SetOptionsV6(options dhcpv6.Options) {
+	n.OptionsV6 = options
+}
+
+func (n *Node) GetOptionsV4() dhcpv4.Options {
+	return n.OptionsV4
+}
+
+func (n *Node) GetOptionsV6() dhcpv6.Options {
+	return n.OptionsV6
+}
+
 // Custom Marshal/Unmarshal to handle HardwareAddr and IP
 func (n *Node) MarshalJSON() ([]byte, error) {
 	type Alias Node

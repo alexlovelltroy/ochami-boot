@@ -50,6 +50,10 @@ func (ps *PostgresStore) DeleteNode(mac string) {
 	}
 }
 
+func (ps *PostgresStore) AddNode(node *Node) {
+	ps.SetNode(string(node.MAC), node)
+}
+
 func (ps *PostgresStore) createTablesIfNotExist() error {
 	query := `
 	CREATE TABLE IF NOT EXISTS nodes (

@@ -11,7 +11,7 @@ import (
 	"github.com/insomniacslk/dhcp/dhcpv6/server6"
 )
 
-func startDHCPServer(store *MemoryStore) {
+func startDHCPServer(store NodeStorage) {
 	dhcpv4Handler := func(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4) {
 		clientMAC := m.ClientHWAddr.String()
 		node, exists := store.GetNode(clientMAC)

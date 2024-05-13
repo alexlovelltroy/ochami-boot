@@ -35,3 +35,9 @@ func (store *MemoryStore) DeleteNode(mac string) {
 	defer store.Unlock()
 	delete(store.Nodes, mac)
 }
+
+func (store *MemoryStore) SetNode(mac string, node *Node) {
+	store.Lock()
+	defer store.Unlock()
+	store.Nodes[mac] = node
+}
