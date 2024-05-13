@@ -2,12 +2,13 @@ package main
 
 import (
 	"sync"
+
+	_ "github.com/lib/pq"
 )
 
 type MemoryStore struct {
 	sync.RWMutex
 	Nodes map[string]*Node // key is MAC address as string
-	data  map[string]interface{}
 }
 
 func NewMemoryStore() *MemoryStore {
@@ -33,23 +34,4 @@ func (store *MemoryStore) DeleteNode(mac string) {
 	store.Lock()
 	defer store.Unlock()
 	delete(store.Nodes, mac)
-}
-
-func (store *MemoryStore) Set(key string, value interface{}) {
-	store.Lock()
-	defer store.Unlock()
-	store.data[key] = value
-}
-
-func (store *MemoryStore) Get(key string) (interface{}, bool) {
-	store.RLock()
-	defer store.RUnlock()
-	val, exists := store.data[key]
-	return val, exists
-}
-
-func (store *MemoryStore) Delete(key string) {
-	store.Lock()
-	defer store.Unlock()
-	delete(store.data, key)
 }

@@ -9,11 +9,11 @@ import (
 )
 
 type Node struct {
-	MAC       net.HardwareAddr `json:"mac"`
-	IPv4      net.IP           `json:"ipv4,omitempty"`
-	IPv6      net.IP           `json:"ipv6,omitempty"`
-	OptionsV4 dhcpv4.Options   `json:"-"`
-	OptionsV6 dhcpv6.Options   `json:"-"`
+	MAC       net.HardwareAddr `json:"mac" db:"mac"`
+	IPv4      net.IP           `json:"ipv4,omitempty" db:"ipv4"`
+	IPv6      net.IP           `json:"ipv6,omitempty" db:"ipv6"`
+	OptionsV4 dhcpv4.Options   `json:"-" db:"dhcpv4_options"`
+	OptionsV6 dhcpv6.Options   `json:"-" db:"dhcpv6_options"`
 }
 
 // Custom Marshal/Unmarshal to handle HardwareAddr and IP
