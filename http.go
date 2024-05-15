@@ -44,6 +44,15 @@ func startAPIServer(store NodeStorage, macStore *MacMemoryStore) {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
 	})
+	http.HandleFunc("/unknown-macs", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "GET":
+			unknownMacs := macStore.GetUnknownMacs()
+			json.NewEncoder(w).Encode(unknownMacs)
+		default:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
 
 	http.ListenAndServe(":8080", nil)
 }

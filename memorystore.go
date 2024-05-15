@@ -47,6 +47,18 @@ func (store *MacMemoryStore) GetLastBootAttempt(mac string) (BootAttempt, bool) 
 	return BootAttempt{}, false
 }
 
+func (store *MacMemoryStore) GetUnknownMacs() []string {
+	store.RLock()
+	defer store.RUnlock()
+	var unknownMacs []string
+	for mac, bootAttempts := range store.Macs {
+		if len(bootAttempts) == 0 || bootAttempts[len(bootAttempts)-1].Known {
+			unknownMacs = append(unknownMacs, mac)
+		}
+	}
+	return unknownMacs
+}
+
 type NodeMemoryStore struct {
 	sync.RWMutex
 	Nodes map[string]*Node // key is MAC address as string
