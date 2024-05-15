@@ -16,9 +16,7 @@ func main() {
 	flag.Parse()
 
 	var nodeStore NodeStorage
-	var macStore *MacMemoryStore
-
-	macStore = NewMacMemoryStore()
+	macStore := NewMacMemoryStore()
 
 	if *dsn != "" {
 		// Use PostgreSQL store
