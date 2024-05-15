@@ -15,7 +15,10 @@ func main() {
 	// Parse command-line flags
 	flag.Parse()
 
-	var store NodeStorage
+	var nodeStore NodeStorage
+	var macStore *MacMemoryStore
+
+	macStore = NewMacMemoryStore()
 
 	if *dsn != "" {
 		// Use PostgreSQL store
@@ -24,21 +27,22 @@ func main() {
 			fmt.Printf("Failed to create PostgreSQL store: %v\n", err)
 			return
 		}
-		store = pgStore
+		nodeStore = pgStore
 	} else {
 		// Use memory store
-		store = NewMemoryStore()
+		nodeStore = NewNodeMemoryStore()
+
 	}
 
 	// Start selected servers based on flags
 	if *apiServer {
-		go startAPIServer(store)
+		go startAPIServer(nodeStore, macStore)
 	}
 	if *tftpServer {
 		go startTFTPServer("/tftpboot")
 	}
 	if *dhcpServer {
-		go startDHCPServer(store)
+		go startDHCPServer(nodeStore, macStore)
 	}
 
 	select {} // Block forever

@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func startAPIServer(store NodeStorage) {
+func startAPIServer(store NodeStorage, macStore *MacMemoryStore) {
 	http.HandleFunc("/node", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
@@ -31,5 +31,19 @@ func startAPIServer(store NodeStorage) {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
 	})
+	http.HandleFunc("/boot-attempts", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "GET":
+			mac := r.URL.Query().Get("mac")
+			if bootAttempt := macStore.GetBootAttempts(mac); bootAttempt != 0 {
+				json.NewEncoder(w).Encode(bootAttempt)
+			} else {
+				http.NotFound(w, r)
+			}
+		default:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
+
 	http.ListenAndServe(":8080", nil)
 }

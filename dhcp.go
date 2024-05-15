@@ -11,12 +11,14 @@ import (
 	"github.com/insomniacslk/dhcp/dhcpv6/server6"
 )
 
-func startDHCPServer(store NodeStorage) {
+func startDHCPServer(store NodeStorage, macStore *MacMemoryStore) {
 	dhcpv4Handler := func(conn net.PacketConn, peer net.Addr, m *dhcpv4.DHCPv4) {
 		clientMAC := m.ClientHWAddr.String()
 		node, exists := store.GetNode(clientMAC)
-		if !exists || (node.IPv4 == nil && node.IPv6 == nil) {
-			return // Do not respond if no node info or no IP specified
+		if !exists || (node.IPv4 == nil) {
+			// Add the unknown MAC to the store
+			macStore.AddBootAttempt(clientMAC, time.Now(), false)
+			return
 		}
 
 		if node.IPv4 != nil {
@@ -33,6 +35,7 @@ func startDHCPServer(store NodeStorage) {
 				return
 			}
 			conn.WriteTo(response.ToBytes(), peer)
+			macStore.AddBootAttempt(clientMAC, time.Now(), true)
 		}
 	}
 
@@ -41,6 +44,8 @@ func startDHCPServer(store NodeStorage) {
 			clientMAC := msg.Options.ClientID().ToBytes()
 			node, exists := store.GetNode(string(clientMAC))
 			if !exists || (node.IPv6 == nil) {
+				// Add the unknown MAC to the store
+				macStore.AddBootAttempt(string(clientMAC), time.Now(), false)
 				return // Do not respond if no node info or no IPv6 specified
 			}
 

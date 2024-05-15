@@ -8,7 +8,7 @@ import (
 )
 
 func TestDHCPV4Options(t *testing.T) {
-	store := NewMemoryStore()
+	store := NewNodeMemoryStore()
 
 	// Create a new node with DHCP options
 	node := &Node{
